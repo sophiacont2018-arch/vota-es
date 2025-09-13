@@ -3,46 +3,60 @@
 <head>
   <meta charset="UTF-8">
   <title>Votação de Camisas</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
     body {
       font-family: Arial, sans-serif;
       background: #f5f5f5;
       text-align: center;
-      margin: 20px;
+      margin: 10px;
+      padding: 0;
     }
+
     h1 {
       color: #333;
+      font-size: 1.8rem;
     }
+
     .form-box {
       background: white;
       padding: 20px;
       border-radius: 12px;
-      width: 500px;
-      margin: auto;
+      width: 100%;
+      max-width: 500px;
+      margin: 20px auto;
       box-shadow: 0 3px 8px rgba(0,0,0,0.2);
     }
+
     input, button {
       width: 100%;
       margin: 10px 0;
-      padding: 10px;
+      padding: 12px;
       border-radius: 8px;
       border: 1px solid #ccc;
+      font-size: 1rem;
+      box-sizing: border-box;
     }
+
     button {
       background: #007bff;
       color: white;
       font-weight: bold;
       cursor: pointer;
+      transition: 0.2s;
     }
+
     button:hover {
       background: #0056b3;
     }
+
     .camisas {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
       gap: 15px;
       margin: 15px 0;
     }
+
     .camisa {
       border: 2px solid transparent;
       border-radius: 10px;
@@ -50,18 +64,42 @@
       cursor: pointer;
       transition: 0.2s;
     }
+
     .camisa img {
       width: 100%;
       height: auto;
       display: block;
     }
+
     .camisa.selecionada {
       border: 3px solid #007bff;
       box-shadow: 0 0 10px rgba(0,123,255,0.6);
     }
+
     .msg {
       margin-top: 15px;
       font-weight: bold;
+      word-wrap: break-word;
+    }
+
+    /* Responsividade */
+    @media (max-width: 768px) {
+      .camisas {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    @media (max-width: 480px) {
+      h1 {
+        font-size: 1.5rem;
+      }
+      .camisas {
+        grid-template-columns: 1fr;
+      }
+      input, button {
+        font-size: 1rem;
+        padding: 10px;
+      }
     }
   </style>
 </head>
@@ -109,7 +147,6 @@
     const msg = document.getElementById("msg");
     const botao = form.querySelector("button");
 
-    // Função para formatar data
     function dataFormatada() {
       const d = new Date();
       const dia = String(d.getDate()).padStart(2,'0');
@@ -120,7 +157,6 @@
       return `${dia}/${mes}/${ano} ${horas}:${minutos}`;
     }
 
-    // Seleção de camisa
     camisas.forEach(c => {
       c.addEventListener("click", () => {
         camisas.forEach(c => c.classList.remove("selecionada"));
@@ -129,7 +165,6 @@
       });
     });
 
-    // Checa se o usuário já votou (localStorage)
     if(localStorage.getItem("jaVotou")) {
       msg.textContent = "⚠️ Você já votou!";
       msg.style.color = "orange";
@@ -138,7 +173,6 @@
       camisas.forEach(c => c.style.pointerEvents = "none");
     }
 
-    // Envio do voto
     form.addEventListener("submit", async (e) => {
       e.preventDefault();
 
@@ -151,7 +185,7 @@
         return;
       }
 
-      botao.disabled = true; // bloqueia botão
+      botao.disabled = true;
       form.querySelector("#nome").disabled = true;
       camisas.forEach(c => c.style.pointerEvents = "none");
 
@@ -169,7 +203,7 @@
         if (response.ok) {
           msg.textContent = "✅ Voto registrado com sucesso!";
           msg.style.color = "green";
-          localStorage.setItem("jaVotou", "true"); // marca que votou
+          localStorage.setItem("jaVotou", "true");
         } else {
           msg.textContent = "❌ Erro ao enviar voto!";
           msg.style.color = "red";
